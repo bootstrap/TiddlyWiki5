@@ -222,7 +222,9 @@ Widget.prototype.computeAttributes = function() {
 		self = this,
 		value;
 	$tw.utils.each(this.parseTreeNode.attributes,function(attribute,name) {
-		if(attribute.type === "indirect") {
+		if(attribute.type === "filtered") {
+			value = self.wiki.filterTiddlers(attribute.filter,self)[0] || "";
+		} else if(attribute.type === "indirect") {
 			value = self.wiki.getTextReference(attribute.textReference,"",self.getVariable("currentTiddler"));
 		} else if(attribute.type === "macro") {
 			value = self.getVariable(attribute.value.name,{params: attribute.value.params});
@@ -493,8 +495,11 @@ Widget.prototype.invokeActions = function(triggeringWidget,event) {
 	for(var t=0; t<this.children.length; t++) {
 		var child = this.children[t];
 		// Invoke the child if it is an action widget
-		if(child.invokeAction && child.invokeAction(triggeringWidget,event)) {
-			handled = true;
+		if(child.invokeAction) {
+			child.refreshSelf();
+			if(child.invokeAction(triggeringWidget,event)) {
+				handled = true;
+			}
 		}
 		// Propagate through through the child if it permits it
 		if(child.allowActionPropagation() && child.invokeActions(triggeringWidget,event)) {
@@ -507,7 +512,7 @@ Widget.prototype.invokeActions = function(triggeringWidget,event) {
 /*
 Invoke the action widgets defined in a string
 */
-Widget.prototype.invokeActionString = function(actions,triggeringWidget,event) {
+Widget.prototype.invokeActionString = function(actions,triggeringWidget,event,variables) {
 	actions = actions || "";
 	var parser = this.wiki.parseText("text/vnd.tiddlywiki",actions,{
 			parentWidget: this,
@@ -515,7 +520,8 @@ Widget.prototype.invokeActionString = function(actions,triggeringWidget,event) {
 		}),
 		widgetNode = this.wiki.makeWidget(parser,{
 			parentWidget: this,
-			document: this.document
+			document: this.document,
+			variables: variables
 		});
 	var container = this.document.createElement("div");
 	widgetNode.render(container,null);
