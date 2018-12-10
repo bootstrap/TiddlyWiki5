@@ -3,14 +3,15 @@ title: $:/core/ui/PageTemplate
 \define containerClasses()
 tc-page-container tc-page-view-$(storyviewTitle)$ tc-language-$(languageTitle)$
 \end
-
-<$importvariables filter="[[$:/core/ui/PageMacros]] [all[shadows+tiddlers]tag[$:/tags/Macro]!has[draft.of]]">
+\import [[$:/core/ui/PageMacros]] [all[shadows+tiddlers]tag[$:/tags/Macro]!has[draft.of]]
 
 <$set name="tv-config-toolbar-icons" value={{$:/config/Toolbar/Icons}}>
 
 <$set name="tv-config-toolbar-text" value={{$:/config/Toolbar/Text}}>
 
 <$set name="tv-config-toolbar-class" value={{$:/config/Toolbar/ButtonClass}}>
+
+<$set name="tv-show-missing-links" value={{$:/config/MissingLinks}}>
 
 <$set name="storyviewTitle" value={{$:/view}}>
 
@@ -52,4 +53,4 @@ tc-page-container tc-page-view-$(storyviewTitle)$ tc-language-$(languageTitle)$
 
 </$set>
 
-</$importvariables>
+</$set>
