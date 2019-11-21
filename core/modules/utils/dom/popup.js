@@ -120,7 +120,8 @@ Popup.prototype.show = function(options) {
 		this.popups.push({
 			title: options.title,
 			wiki: options.wiki,
-			domNode: options.domNode
+			domNode: options.domNode,
+			noStateReference: options.noStateReference
 		});
 	}
 	// Set the state tiddler
@@ -162,7 +163,7 @@ Popup.prototype.cancel = function(level) {
 				popup.wiki.deleteTiddler(popup.title);
 			} else {
 				popup.wiki.deleteTiddler($tw.utils.parseTextReference(popup.title).title);
-			}
+        		}
 		}
 	}
 	if(this.popups.length === 0) {
